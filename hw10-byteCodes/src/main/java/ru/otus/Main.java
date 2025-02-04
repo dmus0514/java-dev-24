@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Main {
     public static void main(String[] args) {
-        TestLoggingInterface testLogging = Ioc.createLoggingService();
+        TestLoggingInterface testLogging = Ioc.createLoggingService(new TestLogging());
         testLogging.calculation();
         testLogging.calculation(5);
         testLogging.calculation(5, 10);
