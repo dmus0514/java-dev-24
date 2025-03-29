@@ -1,10 +1,6 @@
 group = "ru.otus"
 version = "unspecified"
 
-/*repositories {
-    mavenCentral()
-}*/
-
 dependencies {
     implementation("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
