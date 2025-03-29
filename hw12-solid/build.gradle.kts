@@ -1,13 +1,9 @@
-plugins {
-    id("java")
-}
-
 group = "ru.otus"
 version = "unspecified"
 
-repositories {
+/*repositories {
     mavenCentral()
-}
+}*/
 
 dependencies {
     implementation("org.projectlombok:lombok:1.18.30")

@@ -7,47 +7,49 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Getter
 public class ATMImpl implements ATM {
 
     private final Map<Denomination, Cell> cashHolder;
 
-    public ATMImpl() {
+    public ATMImpl(Denomination[] denominations) {
         this.cashHolder = new HashMap<>();
-        Arrays.stream(Denomination.values()).forEach(denomination -> cashHolder.put(denomination, new Cell(denomination)));
+        Arrays.stream(denominations).forEach(denomination -> cashHolder.put(denomination, new Cell(denomination)));
     }
 
-    public Map<Denomination, Cell> getCashHolder() {
-        return cashHolder;
+    public int getBanknotesCount(Denomination denomination) {
+        return cashHolder.get(denomination).getBanknotesCount();
+    }
+
+    public int getRemainderSum(Denomination denomination) {
+        return cashHolder.get(denomination).getRemainderSum();
     }
 
     @Override
-    public Map<Denomination, Integer> getBanknotes(Integer requestedSum) {
-        if (requestedSum == null || requestedSum < 0) {
+    public Map<Denomination, Integer> getBanknotes(int requestedSum) {
+        if (requestedSum <= 0) {
             throw new IllegalArgumentException("Requested sum is null or negative");
         }
         Map<Denomination, Integer> cashForOut = new HashMap<>();
-        Set<Denomination> sortedDenomination = cashHolder.keySet().stream().sorted(Comparator.comparing(Denomination::getValue))
+        Set<Denomination> sortedDenomination = cashHolder.keySet().stream().filter(k -> !cashHolder.get(k).isEmpty())
+                .sorted(Comparator.comparing(Denomination::getValue))
                 .collect(Collectors.toCollection(LinkedHashSet::new))
                 .reversed();
         int remainderSum = requestedSum;
+
         for (Denomination denomination: sortedDenomination) {
-            if (remainderSum == 0) {
-                break;
-            }
-
-            if (cashHolder.get(denomination).isEmpty()) {
-                continue;
-            }
-
             int banknotesRequiredCount = remainderSum / denomination.getValue();
             if (banknotesRequiredCount > 0) {
                 int banknotesOutCount = cashHolder.get(denomination).getBanknotes(banknotesRequiredCount);
                 cashForOut.put(denomination, banknotesOutCount);
                 remainderSum -= denomination.getValue() * banknotesOutCount;
             }
+
+            if (remainderSum == 0) {
+                break;
+            }
         }
         if (remainderSum != 0) {
+            cashForOut.forEach((key, value) -> cashHolder.get(key).putBanknotes(value));
             throw new IncorrectSumException("Requested sum can't be given");
         }
         return cashForOut;

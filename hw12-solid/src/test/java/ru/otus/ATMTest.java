@@ -14,16 +14,16 @@ public class ATMTest {
 
     @Test
     void putBanknotesTest() {
-        var atm = new ATMImpl();
+        var atm = new ATMImpl(Denomination.values());
         int cashSum = fillATM(atm);
         assertEquals(atm.getRemainderSum(), cashSum, "Sum in ATM is not equals to incoming cash sum!");
-        assertEquals(atm.getCashHolder().get(FIVE_HUNDRED).getBanknotesCount(), 20, "Count of banknotes in FIVE_HUNDRED cell is not valid!");
-        assertEquals(atm.getCashHolder().get(ONE_HUNDRED).getRemainderSum(), 1000, "Sum of banknotes in ONE_HUNDRED cell is not valid!");
+        assertEquals(atm.getBanknotesCount(FIVE_HUNDRED), 20, "Count of banknotes in FIVE_HUNDRED cell is not valid!");
+        assertEquals(atm.getRemainderSum(ONE_HUNDRED), 1000, "Sum of banknotes in ONE_HUNDRED cell is not valid!");
     }
 
     @Test
     void getBanknotesTest() {
-        var atm = new ATMImpl();
+        var atm = new ATMImpl(Denomination.values());
         int cashSum = fillATM(atm);
         Map<Denomination, Integer> cashBanknotes = atm.getBanknotes(25_000);
         assertEquals(cashBanknotes.get(ONE_THOUSAND), 25, "Given count of ONE_THOUSAND banknotes is not valid");
@@ -33,7 +33,7 @@ public class ATMTest {
 
     @Test
     void getBanknotesTest2() {
-        var atm = new ATMImpl();
+        var atm = new ATMImpl(Denomination.values());
         int cashSum = fillATM(atm);
         Map<Denomination, Integer> cashBanknotes = atm.getBanknotes(30_740);
         assertEquals(30, cashBanknotes.get(ONE_THOUSAND), "Given count of ONE_THOUSAND banknotes is not valid");
@@ -46,18 +46,18 @@ public class ATMTest {
 
     @Test
     void getBanknotesTest3() {
-        var atm = new ATMImpl();
+        var atm = new ATMImpl(Denomination.values());
         int cashSum = fillATM(atm);
         assertThrows(IncorrectSumException.class, () -> atm.getBanknotes(64_560));
-
+        assertEquals(cashSum, atm.getRemainderSum(), "Remainder Sum in ATM is not valid");
     }
 
     @Test
     void getBanknotesTest4() {
-        var atm = new ATMImpl();
+        var atm = new ATMImpl(Denomination.values());
         int cashSum = fillATM(atm);
         assertThrows(IncorrectSumException.class, () -> atm.getBanknotes(32_477));
-
+        assertEquals(cashSum, atm.getRemainderSum(), "Remainder Sum in ATM is not valid");
     }
 
     Integer fillATM (ATMImpl atm) {
