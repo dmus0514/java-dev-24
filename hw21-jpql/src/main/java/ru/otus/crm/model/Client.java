@@ -23,11 +23,11 @@ public class Client implements Cloneable {
     @Column(name = "name")
     private String name;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER/*, orphanRemoval = true*/)
     private List<Phone> phones;
 
     public Client(String name) {
@@ -54,8 +54,13 @@ public class Client implements Cloneable {
     @SuppressWarnings({"java:S2975", "java:S1182"})
     public Client clone() {
         Client clone = new Client(this.id, this.name);
-        clone.setAddress(new Address(address.getId(), address.getStreet()));
-        clone.setPhones(phones.stream().map(phone -> new Phone(phone.getId(), phone.getNumber(), clone)).toList());
+        if (address != null) {
+            clone.setAddress(new Address(address.getId(), address.getStreet()));
+        }
+
+        if (phones != null) {
+            clone.setPhones(phones.stream().map(phone -> new Phone(phone.getId(), phone.getNumber(), clone)).toList());
+        }
 
         return clone;
     }
