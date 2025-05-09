@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Клиенты</title>
+    <script>
+        function createClient() {
+            const clientName = document.getElementById('clientName');
+            const clientAddress = document.getElementById('clientAddress');
+            const clientPhone = document.getElementById('clientPhone');
+
+            const clientData = {
+                name: clientName.value,
+                address: clientAddress.value,
+                phone: clientPhone.value
+            };
+
+            fetch('/api/client', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(clientData)
+            })
+                .then(response => response.json())
+                .then(client => clientDataContainer.innerHTML = JSON.stringify(client, null, 4));
+        }
+    </script>
+    <script>
+        function getAllClients() {
+            const clientsDataContainer = document.getElementById('clientsDataContainer');
+
+            fetch('/api/client')
+                .then(response => response.json())
+                .then(client => clientsDataContainer.innerHTML = JSON.stringify(client, null, 4));
+        }
+    </script>
+</head>
+
+<body>
+<h4>Создать клиента</h4>
+<input type="text" id = "clientName" value="Alex" placeholder="Введите имя клиента">
+<input type="text" id = "clientAddress" value="Tverskaya street" placeholder="Введите адрес клиента">
+<input type="text" id = "clientPhone" value="+79991231234" placeholder="Введите телефон клиента">
+<button onclick="createClient()">Создать</button>
+<pre id = "clientDataContainer"></pre>
+
+<h4>Получить список клиентов</h4>
+<button onclick="getAllClients()">Получить</button>
+<pre id = "clientsDataContainer"></pre>
+
+</body>
+</html>
