@@ -1,6 +1,7 @@
 package ru.otus.web.helpers;
 
 import java.io.File;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
@@ -18,9 +19,11 @@ public final class FileSystemHelper {
         }
 
         if (path == null) {
-            path = Optional.ofNullable(FileSystemHelper.class.getClassLoader().getResource(fileOrResourceName))
-                    .orElseThrow(() -> new RuntimeException(String.format("File \"%s\" not found", fileOrResourceName)))
-                    .toExternalForm();
+            URL url = FileSystemHelper.class.getClassLoader().getResource(fileOrResourceName);
+            if (url == null) {
+                throw new RuntimeException(String.format("File \"%s\" not found", fileOrResourceName));
+            }
+            path = url.toExternalForm();
         }
         return path;
     }

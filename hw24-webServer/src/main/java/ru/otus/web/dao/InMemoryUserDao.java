@@ -9,16 +9,16 @@ import java.util.Optional;
 public class InMemoryUserDao implements UserDao {
 
     public static final String DEFAULT_PASSWORD = "11111";
-    private final Map<Long, User> users = new HashMap<>();
+    private final Map<String, User> users = new HashMap<>();
 
     public InMemoryUserDao() {
-        users.put(1L, new User(1L, "Крис Гир", "admin", DEFAULT_PASSWORD));
-        users.put(2L, new User(2L, "Ая Кэш", "admin2", DEFAULT_PASSWORD));
+        users.put("admin", new User(1L, "Крис Гир", "admin", DEFAULT_PASSWORD));
+        users.put("admin2", new User(2L, "Ая Кэш", "admin2", DEFAULT_PASSWORD));
     }
 
     @Override
     public Optional<User> findById(long id) {
-        return Optional.ofNullable(users.get(id));
+        return users.values().stream().filter(v -> v.getId() == id).findFirst();
     }
 
     @Override
@@ -28,6 +28,6 @@ public class InMemoryUserDao implements UserDao {
 
     @Override
     public Optional<User> findByLogin(String login) {
-        return users.values().stream().filter(v -> v.getLogin().equals(login)).findFirst();
+        return Optional.ofNullable(users.get(login));
     }
 }

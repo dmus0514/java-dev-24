@@ -38,12 +38,7 @@ public class WebServerWithFilterBasedSecurityDemo {
     public static final String HIBERNATE_CFG_FILE = "hibernate.cfg.xml";
 
     public static void main(String[] args) throws Exception {
-        var configuration = new Configuration().configure(HIBERNATE_CFG_FILE);
-        var dbUrl = configuration.getProperty("hibernate.connection.url");
-        var dbUserName = configuration.getProperty("hibernate.connection.username");
-        var dbPassword = configuration.getProperty("hibernate.connection.password");
-
-        new MigrationsExecutorFlyway(dbUrl, dbUserName, dbPassword).executeMigrations();
+        var configuration = doMigration();
 
         UserDao userDao = new InMemoryUserDao();
         Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
@@ -62,5 +57,15 @@ public class WebServerWithFilterBasedSecurityDemo {
 
         clientsWebServer.start();
         clientsWebServer.join();
+    }
+
+    private static Configuration doMigration() {
+        var configuration = new Configuration().configure(HIBERNATE_CFG_FILE);
+        var dbUrl = configuration.getProperty("hibernate.connection.url");
+        var dbUserName = configuration.getProperty("hibernate.connection.username");
+        var dbPassword = configuration.getProperty("hibernate.connection.password");
+
+        new MigrationsExecutorFlyway(dbUrl, dbUserName, dbPassword).executeMigrations();
+        return configuration;
     }
 }
