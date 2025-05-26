@@ -23,17 +23,12 @@ public class ClientController {
     private static final Logger log = LoggerFactory.getLogger(ClientController.class);
     @PostMapping("/api/client")
     public Client create(@RequestBody ClientRecord clientDto) {
-
-        /*var client = clientService.saveClient(new Client(null, clientDto.name(), null, Set.of(new Phone(null, clientDto.phones().getFirst(), null))));
-        var address = addressService.saveAddress(new Address(null, clientDto.address(), client));
-        return client;*/
-
         Set<Phone> phones = clientDto.phones().stream().map(phone -> new Phone(null, phone, null)).collect(Collectors.toSet());
-        var client = new Client(null, clientDto.name(), null, phones);
+        Address address = new Address(null, clientDto.address(), null);
+        var client = new Client(null, clientDto.name(), address, phones);
         log.info("Prepared client: {}", client);
-        var address = addressService.saveAddress(new Address(null, clientDto.address(), client));
-        log.info("New client created: {}", address.client());
-        return address.client();
+        client = clientService.saveClient(client);
+        return client;
     }
 
     @GetMapping("/api/client/{id}")
@@ -47,7 +42,8 @@ public class ClientController {
         return clientService.findAll().stream().map(client ->
                 new ClientRecord(
                         client.getName(),
-                        addressService.getAddress(client.getAddress_id()).get().street(),
+                        client.getAddress().street(),
+                        /*addressService.getAddress(client.getAddress_id()).get().street(),*/
                         client.getPhones().stream().map(Phone::number).toList())
         ).toList();
     }
