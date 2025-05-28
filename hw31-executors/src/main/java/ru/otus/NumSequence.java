@@ -18,7 +18,7 @@ public class NumSequence {
                     this.wait();
                 }
 
-                logger.info(String.valueOf(value));
+                logger.info("{}", value);
                 if (needChange) {
                     value += isReverse ? -1 : 1;
                 }
