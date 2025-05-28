@@ -12,7 +12,9 @@ public class ClientStreamObserver implements StreamObserver<NumberResponse> {
     public void onNext(NumberResponse numberResponse) {
         long receivedValue = numberResponse.getNumber();
         log.info("New Value:{}", receivedValue);
-        value = receivedValue;
+        synchronized (this) {
+            value = receivedValue;
+        }
     }
 
     @Override
@@ -25,7 +27,7 @@ public class ClientStreamObserver implements StreamObserver<NumberResponse> {
         log.info("Request completed");
     }
 
-    public long getAndResetValue() {
+    public synchronized long getAndResetValue() {
         long tmp = value;
         value = 0;
         return tmp;
