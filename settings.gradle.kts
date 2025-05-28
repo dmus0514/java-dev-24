@@ -12,6 +12,7 @@ include("hw21-jpql")
 include("hw22-cache")
 include("hw24-webServer")
 include("hw25-di")
+include("hw28-springDataJdbc")
 include("hw31-executors")
 
 pluginManagement {
