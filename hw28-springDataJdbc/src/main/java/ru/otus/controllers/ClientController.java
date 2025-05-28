@@ -8,7 +8,6 @@ import ru.otus.crm.dto.ClientRecord;
 import ru.otus.crm.model.Address;
 import ru.otus.crm.model.Client;
 import ru.otus.crm.model.Phone;
-import ru.otus.crm.service.DBServiceAddress;
 import ru.otus.crm.service.DBServiceClient;
 
 import java.util.List;
@@ -18,9 +17,10 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 public class ClientController {
-    private final DBServiceClient clientService;
-    private final DBServiceAddress addressService;
     private static final Logger log = LoggerFactory.getLogger(ClientController.class);
+
+    private final DBServiceClient clientService;
+
     @PostMapping("/api/client")
     public Client create(@RequestBody ClientRecord clientDto) {
         Set<Phone> phones = clientDto.phones().stream().map(phone -> new Phone(null, phone, null)).collect(Collectors.toSet());
@@ -43,7 +43,6 @@ public class ClientController {
                 new ClientRecord(
                         client.getName(),
                         client.getAddress().street(),
-                        /*addressService.getAddress(client.getAddress_id()).get().street(),*/
                         client.getPhones().stream().map(Phone::number).toList())
         ).toList();
     }
