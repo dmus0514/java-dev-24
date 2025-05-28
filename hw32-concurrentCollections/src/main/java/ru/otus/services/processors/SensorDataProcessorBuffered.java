@@ -31,7 +31,9 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
     @Override
     public void process(SensorData data) {
         boolean elemAdded = dataBuffer.offer(data);
-        if (!elemAdded) { log.error("Element was not added! {}", data); }
+        if (!elemAdded) {
+            log.error("Element was not added! {}", data);
+        }
 
         if (dataBuffer.size() >= bufferSize) {
             flush();
