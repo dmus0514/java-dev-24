@@ -16,6 +16,8 @@ include("hw28-springDataJdbc")
 include("hw31-executors")
 include("hw32-concurrentCollections")
 include("hw34-multiprocess")
+include("hw38-webflux-chat:client-service")
+include("hw38-webflux-chat:datastore-service")
 
 pluginManagement {
     val jgitver: String by settings
@@ -38,3 +40,4 @@ pluginManagement {
         id("com.diffplug.spotless") version spotless
     }
 }
+
